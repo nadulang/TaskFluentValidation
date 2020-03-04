@@ -10,7 +10,7 @@ namespace TaskMediatrFluentValidation.Validator
         public MerchantValidator()
         {
             RuleFor(x => x.data.attributes.name).NotEmpty().WithMessage("name can't be empty");
-            RuleFor(x => x.data.attributes.address).NotEmpty().WithMessage("max address length is 50");
+            RuleFor(x => x.data.attributes.address).NotEmpty().WithMessage("address can't be empty");
             RuleFor(x => x.data.attributes.rating).ExclusiveBetween(1, 5).WithMessage("rating is bettween 1-5");
         }
     }
