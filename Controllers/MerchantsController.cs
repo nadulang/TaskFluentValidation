@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Net;
@@ -55,6 +56,10 @@ namespace TaskMediatrFluentValidation.Controllers
         {
             var merchs = m.data.attributes;
             _context.Merchants.Add(merchs);
+            var time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalSeconds;
+            merchs.created_at = (long)time;
+            merchs.updated_at = (long)time;
+            _context.SaveChanges();
             return Ok(new {message = "success retrieve data", status = true, data = merchs});
         }
 
@@ -90,7 +95,18 @@ namespace TaskMediatrFluentValidation.Controllers
             var time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalSeconds;
             g.updated_at = (long)time;
             _context.SaveChanges();
-            return Ok(new {message = "success retrieve data", status = true, data = merchs});
+
+            var y = new Merchant
+            {
+                id = g.id,
+                name = merchs.name,
+                image = merchs.image,
+                address = merchs.address,
+                rating = merchs.rating,
+                created_at = g.created_at,
+                updated_at = g.updated_at 
+            };
+            return Ok(new {message = "success retrieve data", status = true, data = y});
             }
 
             catch (Exception)

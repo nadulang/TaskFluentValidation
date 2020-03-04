@@ -55,6 +55,10 @@ namespace TaskMediatrFluentValidation.Controllers
         {
             var pro = p.data.attributes;
             _context.Productsbuy.Add(pro);
+            var time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalSeconds;
+            pro.created_at = (long)time;
+            pro.updated_at = (long)time;
+            _context.SaveChanges();
             return Ok(new {message = "success retrieve data", status = true, data = pro});
         }
 
@@ -89,7 +93,17 @@ namespace TaskMediatrFluentValidation.Controllers
             var time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalSeconds;
             g.updated_at = (long)time;
             _context.SaveChanges();
-            return Ok(new {message = "success retrieve data", status = true, data = pro});
+
+            var o = new Products
+            {
+                id = g.id,
+                merchant_id = pro.merchant_id,
+                name = pro.name,
+                price = pro.price,
+                created_at = g.created_at,
+                updated_at = g.updated_at
+            };
+            return Ok(new {message = "success retrieve data", status = true, data = o});
             }
 
             catch (Exception)

@@ -19,6 +19,7 @@ using TaskMediatrFluentValidation.Validator;
 using MediatR;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using TaskMediatrFluentValidation.Controllers;
 
 namespace TaskMediatrFluentValidation
 {
@@ -39,11 +40,13 @@ namespace TaskMediatrFluentValidation
             services.AddMvc()
                     .AddFluentValidation(); 
 
-            services.AddTransient<IValidator<Customer>, CustomerValidator>()
-                    .AddTransient<IValidator<CustomerPaymentCards>, CustomerPaymentValidator>()
-                    .AddTransient<IValidator<Merchant>, MerchantValidator>()
-                    .AddTransient<IValidator<Products>, ProductsValidator>();
+            services.AddTransient<IValidator<Customers>, CustomerValidator>()
+                    .AddTransient<IValidator<Payments>, CustomerPaymentValidator>()
+                    .AddTransient<IValidator<Merch>, MerchantValidator>()
+                    .AddTransient<IValidator<Products1>, ProductsValidator>();
+
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidator<,>));
+
             services.AddAuthentication( options => {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -55,6 +55,10 @@ namespace TaskMediatrFluentValidation.Controllers
         {
             var customer = custs.data.attributes;
             _context.Cards.Add(customer);
+            var time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalSeconds;
+            customer.created_at = (long)time;
+            customer.updated_at = (long)time;
+            _context.SaveChanges();
             return Ok(new {message = "success retrieve data", status = true, data = customer});
         }
 
@@ -91,8 +95,23 @@ namespace TaskMediatrFluentValidation.Controllers
             g.credit_card_number = customer.credit_card_number;
             var time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalSeconds;
             g.updated_at = (long)time;
+
             _context.SaveChanges();
-            return Ok(new {message = "success retrieve data", status = true, data = customer});
+
+            var w = new CustomerPaymentCards
+            {
+                id = g.id,
+                customer_id = customer.customer_id,
+                name_on_card = customer.name_on_card,
+                exp_month = customer.exp_month,
+                exp_year = customer.exp_year,
+                postal_code = customer.postal_code,
+                credit_card_number = customer.credit_card_number,
+                created_at = g.created_at,
+                updated_at = g.updated_at
+            };
+            
+            return Ok(new {message = "success retrieve data", status = true, data = w});
             }
 
             catch (Exception)

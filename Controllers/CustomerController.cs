@@ -29,8 +29,13 @@ namespace TaskMediatrFluentValidation.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            List<object> allcusts = new List<object>();
             var cust = _context.CustomersAcc;
-            return Ok(new {message = "success retrieve data", status = true, data = cust});
+            foreach (var x in cust)
+            {
+                allcusts.Add(new { x.id, x.full_name, x.username, x.birthdate, x.password, gender = Enum.GetName(typeof(Gender), x.gender), x.email, x.phone_number, x.created_at, x.updated_at});
+            }
+            return Ok(new {message = "success retrieve data", status = true, data = allcusts});
         }
 
         [HttpGet("{id}")]
@@ -79,7 +84,9 @@ namespace TaskMediatrFluentValidation.Controllers
                 password = custs.data.attributes.password,
                 gender = custs.data.attributes.gender.ToString(),
                 email = custs.data.attributes.email,
-                phone_number = custs.data.attributes.phone_number
+                phone_number = custs.data.attributes.phone_number,
+                created_at = inputCustomer.created_at,
+                updated_at = inputCustomer.updated_at
             };
             
             return Ok(new {message = "success retrieve data", status = true, data = customer});
@@ -120,7 +127,22 @@ namespace TaskMediatrFluentValidation.Controllers
             var time = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime()).TotalSeconds;
             g.updated_at = (long)time;
             _context.SaveChanges();
-            return Ok(new {message = "success retrieve data", status = true, data = customer});
+
+            var u = new CustomerResponse
+            {
+                id = g.id,
+                full_name = customer.full_name,
+                username = customer.username,
+                birthdate = customer.birthdate,
+                password = customer.password,
+                gender = customer.gender.ToString(),
+                email = customer.email,
+                phone_number = customer.phone_number,
+                created_at = g.created_at,
+                updated_at = g.updated_at
+            };
+
+            return Ok(new {message = "success retrieve data", status = true, data = u});
             }
 
             catch (Exception)
